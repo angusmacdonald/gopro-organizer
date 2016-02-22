@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-import exifphoto
+import photoinfo
 
 def iterateFolder(inputDir, outputDir):
 
