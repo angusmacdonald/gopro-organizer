@@ -10,7 +10,7 @@ config = {
     'download_url': 'http://github.com/angusmacdonald/gopro-organizer',
     'author_email': 'angus.d.macdonald AT gmail.com',
     'version': '0.1',
-    'install_requires': ['nose'],
+    'install_requires': ['nose', 'configobj'],
     'packages': ['goproorg'],
     'scripts': [],
     'name': 'goproorg'

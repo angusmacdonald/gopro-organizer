@@ -3,7 +3,11 @@ import sys
 import os
 import shutil
 
+from configobj import ConfigObj
+
 import photoinfo
+
+config = ConfigObj("default.conf", unrepr=True)
 
 def iterateFolder(inputDir, outputDir):
 
@@ -24,20 +28,28 @@ def moveFilesInDir(inputDir, outputDir):
 
 		fullFilePath = os.path.join(inputDir, file)
 
+		acceptedVideoFormats = ('.MP4')
+
+		if (config['includeLrvFile']):
+			acceptedVideoFormats + ('.LRV')
+		if (config['includeThmFile']):
+			acceptedVideoFormats + ('.THM')
+
+
 		if file.endswith(('.JPG')) and file.startswith('GOPR'):
 			# This is a regular photo
 			print "Moving photo {}".format(file)
-			moveToDir(exifphoto.getDateTaken(fullFilePath), "photos", fullFilePath, outputDir)
+			moveToDir(photoinfo.getDateTaken(fullFilePath), "photos", fullFilePath, outputDir)
 		elif file.endswith(('.JPG')):
 			# This is a time lapse photo
 			print "Moving timelapse photo {}".format(file)
 			timeLapseNum = file[1:4]
 			print "Time lapse number {}".format(timeLapseNum)
 			outputSubDir = "timelapses/{}".format(timeLapseNum)
-			moveToDir(exifphoto.getDateTaken(fullFilePath), outputSubDir, fullFilePath, outputDir)
-		elif file.endswith(('.MP4', '.LRV', '.THM')):
+			moveToDir(photoinfo.getDateTaken(fullFilePath), outputSubDir, fullFilePath, outputDir)
+		elif file.endswith(acceptedVideoFormats):	
 			print "Moving video {}".format(file)
-			moveToDir(exifphoto.getDateTaken(fullFilePath), "videos", fullFilePath, outputDir)
+			moveToDir(photoinfo.getDateTaken(fullFilePath), "videos", fullFilePath, outputDir)
 
 def moveToDir(dateDir, subDir, filePath, outputDir):
 
@@ -51,8 +63,12 @@ def moveToDir(dateDir, subDir, filePath, outputDir):
 	fileName = os.path.basename(filePath)
 	destLocation = os.path.join(subDirPath, fileName)
 
-	print "Copying {} to {}".format(filePath, destLocation)
-	shutil.copy2(filePath, destLocation)
+	if config['move'] == 'True':
+		print "Moving {} to {}".format(filePath, destLocation)
+		shutil.move(filePath, destLocation)
+	else:	
+		print "Copying {} to {}".format(filePath, destLocation)
+		shutil.copy2(filePath, destLocation)
 
 if __name__ == '__main__':
 	inputDir = sys.argv[1]
