@@ -3,3 +3,6 @@ init:
 
 test:
     nosetests
+
+installer:
+	pyinstaller --onefile goproorg/organizer.py -p goproorg/ -n gopro-organizer
