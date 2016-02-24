@@ -9,6 +9,10 @@ import photoinfo
 
 config = ConfigObj("default.conf", unrepr=True)
 
+PHOTOS = config['photos_dir']
+VIDEOS = config['videos_dir']
+TIMELAPSES = config['timelapses_dir']
+
 def iterateFolder(inputDir, outputDir):
 
 	absInputPath = os.path.abspath(inputDir)
@@ -39,17 +43,17 @@ def moveFilesInDir(inputDir, outputDir):
 		if file.endswith(('.JPG')) and file.startswith('GOPR'):
 			# This is a regular photo
 			print "Moving photo {}".format(file)
-			moveToDir(photoinfo.getDateTaken(fullFilePath), "photos", fullFilePath, outputDir)
+			moveToDir(photoinfo.getDateTaken(fullFilePath), PHOTOS, fullFilePath, outputDir)
 		elif file.endswith(('.JPG')):
 			# This is a time lapse photo
 			print "Moving timelapse photo {}".format(file)
 			timeLapseNum = file[1:4]
 			print "Time lapse number {}".format(timeLapseNum)
-			outputSubDir = "timelapses/{}".format(timeLapseNum)
+			outputSubDir = "{}/{}".format(TIMELAPSES, timeLapseNum)
 			moveToDir(photoinfo.getDateTaken(fullFilePath), outputSubDir, fullFilePath, outputDir)
 		elif file.endswith(acceptedVideoFormats):	
 			print "Moving video {}".format(file)
-			moveToDir(photoinfo.getDateTaken(fullFilePath), "videos", fullFilePath, outputDir)
+			moveToDir(photoinfo.getDateTaken(fullFilePath), VIDEOS, fullFilePath, outputDir)
 
 def moveToDir(dateDir, subDir, filePath, outputDir):
 
