@@ -24,12 +24,12 @@ class OrganizerUi(wx.Frame):
 		hbox1 = wx.BoxSizer(wx.HORIZONTAL)
 		self.inputPathLabel = wx.StaticText(panel, label='Path to GoPro Files')
 		self.inputPathLabel.SetFont(font)
-		hbox1.Add(self.inputPathLabel, flag=wx.RIGHT, border=8)
+		hbox1.Add(self.inputPathLabel, flag=wx.RIGHT|wx.EXPAND, border=8)
 		self.inputPathText = wx.TextCtrl(panel)
 		self.inputPathText.SetValue(expanduser("~"))
 		hbox1.Add(self.inputPathText, proportion=1, border=8)
 		
-		btnInputDir = wx.Button(panel, label='...', size=(40, 30))
+		btnInputDir = wx.Button(panel, label='...', size=(40, 20))
 		hbox1.Add(btnInputDir, border=8)
 
 		vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
@@ -44,7 +44,7 @@ class OrganizerUi(wx.Frame):
 		self.outputPathText.SetValue(expanduser("~"))
 		hbox2.Add(self.outputPathText, proportion=1)
 		
-		btnOutputDir = wx.Button(panel, label='...', size=(40, 30))
+		btnOutputDir = wx.Button(panel, label='...', size=(40, 20))
 		hbox2.Add(btnOutputDir)
 
 		vbox.Add(hbox2, flag=wx.LEFT | wx.TOP | wx.RIGHT | wx.EXPAND, border=10)
