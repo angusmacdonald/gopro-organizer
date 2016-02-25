@@ -3,6 +3,7 @@ import os, shutil
 import logging
 
 from configobj import ConfigObj
+from wx.lib.pubsub import pub
 
 import photoinfo
 import file_matcher
@@ -30,7 +31,8 @@ def _moveFilesInDir(inputDir, outputDir):
 
 def _processFile(fileName, inputDir, rootOutputDir):
 	fullFilePath = os.path.join(inputDir, fileName)
-
+	pub.sendMessage("STATUS UPDATE", message="Processing file '{}'".format(fileName))
+		
 	subDirectory = file_matcher.determineDestination(fileName, _getFileNamingPatterns())
 	
 	if subDirectory:

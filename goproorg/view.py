@@ -1,12 +1,12 @@
 import wx
 from os.path import expanduser
+import logging
 
-import organizer
 
-class OrganizerUi(wx.Frame):
+class OrganizerView(wx.Frame):
   
 	def __init__(self, parent, title):
-		super(OrganizerUi, self).__init__(parent, title=title, 
+		super(OrganizerView, self).__init__(parent, title=title, 
 			size=(390, 190))
 			
 		self.InitUI()
@@ -79,15 +79,15 @@ class OrganizerUi(wx.Frame):
 		vbox.Add((-1, 25))
 
 		hbox5 = wx.BoxSizer(wx.HORIZONTAL)
-		btnStartOrganizing = wx.Button(panel, label='Start Organizing', size=(170, 30))
-		hbox5.Add(btnStartOrganizing)
+		self.btnStartOrganizing = wx.Button(panel, label='Start Organizing', size=(170, 30))
+		hbox5.Add(self.btnStartOrganizing)
 		btnClose = wx.Button(panel, label='Close', size=(70, 30))
 		hbox5.Add(btnClose, flag=wx.LEFT|wx.BOTTOM, border=5)
 		vbox.Add(hbox5, flag=wx.ALIGN_RIGHT|wx.RIGHT, border=1)
 
 		panel.SetSizer(vbox)
 
-		btnStartOrganizing.Bind(wx.EVT_BUTTON, self.OnStartOrganizing)
+		
 		btnClose.Bind(wx.EVT_BUTTON, self.OnClose)
 		btnInputDir.Bind(wx.EVT_BUTTON, self.OnInputPathDir)
 		btnOutputDir.Bind(wx.EVT_BUTTON, self.OnOutputPathDir)
@@ -122,14 +122,16 @@ class OrganizerUi(wx.Frame):
 		print self.chkCopyFiles.IsChecked()
 		print self.chkRenameToDate.IsChecked()
 
-		organizer.iterateFolder(self.inputPathText.GetValue(), self.outputPathText.GetValue())
+	def AddMessage(self, message):
+		logging.debug("Incoming message: {}".format(message))
+		print message
 
 	def OnClose(self, event):
 		self.Close()
 
 if __name__ == '__main__':
-  	appName = "GoPro Organizer"
+	appName = "GoPro Organizer"
 	app = wx.App()
 	app.SetAppName(appName) # Used in OSx app menu
-	OrganizerUi(None, title=appName)
+	OrganizerView(None, title=appName)
 	app.MainLoop()
