@@ -43,7 +43,7 @@ class TestOrganizer:
 			assert os.path.exists(file.name)
 
 	def test_files_organized(self):
-		organizer.processGoProDirectory(self.input_dir, self.output_dir)
+		organizer.Organizer().processGoProDirectory(self.input_dir, self.output_dir)
 
 		assert len(os.listdir(self.output_dir)) == 1
 
