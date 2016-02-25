@@ -12,7 +12,6 @@ config = ConfigObj("default.conf", unrepr=True)
 VIDEOS = config['videos_dir']
 
 def processGoProDirectory(inputDir, outputDir):
-
 	absInputPath = os.path.abspath(inputDir)
 	absOutputDir = os.path.abspath(outputDir)
 

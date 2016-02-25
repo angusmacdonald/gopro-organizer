@@ -17,6 +17,16 @@ class OrganizerUi(wx.Frame):
 	
 		panel = wx.Panel(self)
 
+		# Menu
+		menubar = wx.MenuBar()
+		fileMenu = wx.Menu()
+		fitem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
+		self.SetMenuBar(menubar)
+		
+		self.Bind(wx.EVT_MENU, self.OnClose, fitem)
+
+		# Main Body
+
 		font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
   
 		vbox = wx.BoxSizer(wx.VERTICAL)
@@ -118,7 +128,8 @@ class OrganizerUi(wx.Frame):
 		self.Close()
 
 if __name__ == '__main__':
-  
+  	appName = "GoPro Organizer"
 	app = wx.App()
-	OrganizerUi(None, title='GoPro Organizer')
+	app.SetAppName(appName) # Used in OSx app menu
+	OrganizerUi(None, title=appName)
 	app.MainLoop()

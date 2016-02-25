@@ -1,6 +1,8 @@
 /samples/
 /results/
 
+# Code coverage
+/cover/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
