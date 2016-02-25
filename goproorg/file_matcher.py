@@ -12,25 +12,23 @@ CHAPTERED = config['chaptered_dir']
 THREE_D = config['three_d_dir']
 
 # Via http://gopro.com/support/articles/hero3-and-hero3-file-naming-convention
-default_patterns = { 'GOPR\d\d\d\d\.MP4': VIDEOS,
+def defaultPatterns():
+	return { 'GOPR\d\d\d\d\.MP4': VIDEOS,
 			 'GOPR\d\d\d\d\.JPG': PHOTOS,
 			 'GP(\d\d)\d\d\d\d\.MP4': CHAPTERED,
 			 'G(\d\d\d)\d\d\d\d\.JPG': TIMELAPSES,
 			 '3D_[LR]\d\d\d\d\.MP4': THREE_D }
 
-def defaultPatterns():
-	return default_patterns
-
-def getType(fileName, patterns=defaultPatterns()):
-	for pattern, dirName in default_patterns.iteritems():
+def determineDestination(fileName, patterns=defaultPatterns()):
+	for pattern, dirName in patterns.iteritems():
 		m = re.search(pattern, fileName)
 		
 		if m:
-			return processMatch(m, pattern, dirName)
+			return _processMatch(m, pattern, dirName)
 	
 	return None
 
-def processMatch(m, pattern, name):
+def _processMatch(m, pattern, name):
 	numGroups = len(m.groups())
 
 	if numGroups > 0:
