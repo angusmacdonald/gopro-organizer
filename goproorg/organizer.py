@@ -1,17 +1,15 @@
-
 import sys
-import os
-import shutil
+import os, shutil
+import logging
 
 from configobj import ConfigObj
 
 import photoinfo
+import file_matcher
 
 config = ConfigObj("default.conf", unrepr=True)
 
-PHOTOS = config['photos_dir']
 VIDEOS = config['videos_dir']
-TIMELAPSES = config['timelapses_dir']
 
 def iterateFolder(inputDir, outputDir):
 
@@ -32,28 +30,20 @@ def moveFilesInDir(inputDir, outputDir):
 
 		fullFilePath = os.path.join(inputDir, file)
 
-		acceptedVideoFormats = ('.MP4')
+		patterns = file_matcher.defaultPatterns()
+		
+		if (config['includeThmAndLrvFiles']):
+			patterns['GOPR\d\d\d\d\.[THM|LRV]'] = VIDEOS
 
-		if (config['includeLrvFile']):
-			acceptedVideoFormats + ('.LRV')
-		if (config['includeThmFile']):
-			acceptedVideoFormats + ('.THM')
+		subDirectory = file_matcher.getType(file, patterns)
+		
+		if subDirectory:
+			logging.debug("Moving '{}' to '{}'".format(file, subDirectory))
 
-
-		if file.endswith(('.JPG')) and file.startswith('GOPR'):
-			# This is a regular photo
-			print "Moving photo {}".format(file)
-			moveToDir(photoinfo.getDateTaken(fullFilePath), PHOTOS, fullFilePath, outputDir)
-		elif file.endswith(('.JPG')):
-			# This is a time lapse photo
-			print "Moving timelapse photo {}".format(file)
-			timeLapseNum = file[1:4]
-			print "Time lapse number {}".format(timeLapseNum)
-			outputSubDir = "{}/{}".format(TIMELAPSES, timeLapseNum)
-			moveToDir(photoinfo.getDateTaken(fullFilePath), outputSubDir, fullFilePath, outputDir)
-		elif file.endswith(acceptedVideoFormats):	
-			print "Moving video {}".format(file)
-			moveToDir(photoinfo.getDateTaken(fullFilePath), VIDEOS, fullFilePath, outputDir)
+			dateTaken = photoinfo.getDateTaken(fullFilePath)
+			moveToDir(dateTaken, subDirectory, fullFilePath, outputDir)
+		else:
+			logging.info("Filename format not recognized: {}".format(file))
 
 def moveToDir(dateDir, subDir, filePath, outputDir):
 
@@ -68,10 +58,10 @@ def moveToDir(dateDir, subDir, filePath, outputDir):
 	destLocation = os.path.join(subDirPath, fileName)
 
 	if config['move'] == 'True':
-		print "Moving {} to {}".format(filePath, destLocation)
+		logging.debug("Moving {} to {}".format(filePath, destLocation))
 		shutil.move(filePath, destLocation)
 	else:	
-		print "Copying {} to {}".format(filePath, destLocation)
+		logging.debug("Copying {} to {}".format(filePath, destLocation))
 		shutil.copy2(filePath, destLocation)
 
 if __name__ == '__main__':
