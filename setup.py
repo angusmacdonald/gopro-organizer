@@ -17,7 +17,7 @@ ez_setup.use_setuptools()
 import sys
 from setuptools import setup
 
-mainscript = 'goproorg/ui.py'
+mainscript = 'goproorg/controller.py'
 
 if sys.platform == 'darwin':
  extra_options = dict(

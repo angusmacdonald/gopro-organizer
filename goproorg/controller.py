@@ -3,6 +3,7 @@ from wx.lib.pubsub import pub
 import view
 import model
 
+import settings
 
 class OrganizerController:
 	def __init__(self, app, appName):
@@ -18,8 +19,16 @@ class OrganizerController:
 
 	def StartOrganizing(self, evt):
 		pub.sendMessage("STATUS UPDATE", message="Beginning processing...")
+
+		sett = settings.OrganizerSettings()
+
+		sett.setMoveFile(not self.view.chkCopyFiles.IsChecked())
+
+		sett.setIncludeMeta(self.view.chkIncludeThmLrv.IsChecked())
+
+
 		self.model.startProcessing(self.view.inputPathText.GetValue(), 
-			self.view.outputPathText.GetValue())
+			self.view.outputPathText.GetValue(), sett)
 		pub.sendMessage("STATUS UPDATE", message="Finished processing...")
 		
 		
