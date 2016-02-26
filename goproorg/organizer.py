@@ -14,18 +14,36 @@ config = ConfigObj("default.conf", unrepr=True)
 VIDEOS = config['videos_dir']
 
 class Organizer:
+	""" Main class, finds and moves/copies photos as specified in settings.
+
+		The class is initialized with settings that define how the move will
+		take place, and the processGoProDirectory() starts the action on a
+		specified set of input and output directories.
+	"""
+
 	def __init__(self, sett = settings.OrganizerSettings()):
+		"""
+			Arguments:
+				sett (settings): Config settings related to the processing
+					of the directory.
+		"""
+		
 		self.settings = sett
 
-
 	def processGoProDirectory(self, inputDir, outputDir):
+		"""
+			Find all the appropriate files in the input directory and
+			move/copy them to the output directory.
+
+			Arguments:
+				inputDir (str): path to the directory containing GoPro DCIM dirs.
+				outputDir (str): path to the directory where results will be stored.
+		"""
+
 		absInputPath = os.path.abspath(inputDir)
 		absOutputDir = os.path.abspath(outputDir)
 
-		print absInputPath
-
 		for item in os.listdir(absInputPath):
-
 			if not os.path.isfile(item):
 				self._moveFilesInDir(os.path.join(inputDir, item), absOutputDir)
 			else:
