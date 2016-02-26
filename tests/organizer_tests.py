@@ -1,6 +1,9 @@
 from nose.tools import *
 
-from goproorg import organizer
+import sys
+sys.path.append('goproorg')
+from org import organizer
+
 import shutil, tempfile, os
 
 from configobj import ConfigObj

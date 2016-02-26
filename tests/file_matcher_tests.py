@@ -1,7 +1,9 @@
 from nose.tools import *
 import os
 
-from goproorg import file_matcher
+import sys
+sys.path.append('goproorg')
+from org import file_matcher
 from configobj import ConfigObj
 
 config = ConfigObj("default.conf", unrepr=True)

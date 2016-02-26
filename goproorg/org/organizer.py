@@ -77,7 +77,10 @@ class Organizer:
 	def _getDestDirectory(self, fullFilePath, rootOutputDir, subDirectory):
 		dateTaken = photoinfo.getDateTaken(fullFilePath)
 		
-		return os.path.join(rootOutputDir, dateTaken, subDirectory)
+		if (self.settings.storeByDateTaken):
+			return os.path.join(rootOutputDir, dateTaken, subDirectory)
+		else :
+			return os.path.join(rootOutputDir, subDirectory)
 
 	def _getFileNamingPatterns(self):
 		patterns = file_matcher.defaultPatterns()

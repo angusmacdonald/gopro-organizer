@@ -96,6 +96,19 @@ class OrganizerView(wx.Frame):
 		
 		vbox.Add(hbox45, flag=wx.LEFT, border=10)
 
+
+
+		hbox46 = wx.BoxSizer(wx.HORIZONTAL)
+		self.chkDateSubDirs = wx.CheckBox(panel, 
+			label='Store items in sub-directories by date taken.')
+		self.chkDateSubDirs.SetFont(font)
+		self.chkDateSubDirs.SetValue(True)
+		hbox46.Add(self.chkDateSubDirs, flag=wx.LEFT, border=10)
+		
+		vbox.Add(hbox46, flag=wx.LEFT, border=10)
+
+
+
 		vbox.Add((-1, 25))
 
 		hbox5 = wx.BoxSizer(wx.HORIZONTAL)

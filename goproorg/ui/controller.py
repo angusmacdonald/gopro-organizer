@@ -27,7 +27,7 @@ class OrganizerController:
 		sett.setMoveFile(not self.view.chkCopyFiles.IsChecked())
 
 		sett.setIncludeMeta(self.view.chkIncludeThmLrv.IsChecked())
-
+		sett.setStoreByDateTaken(self.view.chkDateSubDirs.IsChecked())
 
 		self.model.startProcessing(self.view.inputPathText.GetValue(), 
 			self.view.outputPathText.GetValue(), sett)
