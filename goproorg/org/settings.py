@@ -7,6 +7,8 @@ class OrganizerSettings:
 		self.moveFile = config['move']
 		self.includeMeta = config['includeThmAndLrvFiles']
 		self.storeByDateTaken = config['storeByDateTaken']
+		self.fileNamingFormat = config['dateNamingFormat']
+		self.useCustomNamingFormat = config['useCustomNamingFormat']
 
 	def setMoveFile(self, move):
 		self.moveFile = move
@@ -16,3 +18,9 @@ class OrganizerSettings:
 
 	def setStoreByDateTaken(self, storeByDateTaken):
 		self.storeByDateTaken = storeByDateTaken
+
+	def setUseCustomNamingFormat(self, useCustomNamingFormat):
+		self.useCustomNamingFormat = useCustomNamingFormat
+
+	def setFileNamingFormat(self, fileNamingFormat):
+		self.fileNamingFormat = fileNamingFormat

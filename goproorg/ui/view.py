@@ -2,6 +2,8 @@ import wx
 from os.path import expanduser
 import logging
 
+from configobj import ConfigObj
+config = ConfigObj("default.conf", unrepr=True)
 
 class OrganizerView(wx.Frame):
   
@@ -79,6 +81,7 @@ class OrganizerView(wx.Frame):
 
 		# Options
 
+		# Include THM and LRV files
 		hbox4 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkIncludeThmLrv = wx.CheckBox(panel, label='Include THM and LRV Files. They are ignored if unchecked.')
 		self.chkIncludeThmLrv.SetFont(font)
@@ -87,6 +90,7 @@ class OrganizerView(wx.Frame):
 
 		vbox.Add(hbox4, flag=wx.LEFT, border=10)
 
+		# Copy or move?
 		hbox45 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkCopyFiles = wx.CheckBox(panel, 
 			label='Copy, leaving existing files untouched. They are deleted if unchecked.')
@@ -96,8 +100,7 @@ class OrganizerView(wx.Frame):
 		
 		vbox.Add(hbox45, flag=wx.LEFT, border=10)
 
-
-
+		# Store in date sub-directory option:
 		hbox46 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkDateSubDirs = wx.CheckBox(panel, 
 			label='Store items in sub-directories by date taken.')
@@ -107,10 +110,29 @@ class OrganizerView(wx.Frame):
 		
 		vbox.Add(hbox46, flag=wx.LEFT, border=10)
 
+		# Rename files option:
+		hbox47 = wx.BoxSizer(wx.HORIZONTAL)
+		self.chkChangeFileNameFormat = wx.CheckBox(panel, 
+			label='Rename files to date taken format.')
+		self.chkChangeFileNameFormat.SetFont(font)
+		self.chkChangeFileNameFormat.SetValue(False)
+		hbox47.Add(self.chkChangeFileNameFormat, flag=wx.LEFT, border=10)
+		
+		vbox.Add(hbox47, flag=wx.LEFT, border=10)
 
+		# Date regex for file naming:
+		hbox48 = wx.BoxSizer(wx.HORIZONTAL)
+		self.fileNameFormat = wx.TextCtrl(panel)
+		self.fileNameFormat.Enable(False)
+		self.fileNameFormat.SetValue(config['dateNamingFormat'])
+		hbox48.Add(self.fileNameFormat, proportion=1, border=8)
+		
+		vbox.Add(hbox48, flag=wx.LEFT|wx.RIGHT|wx.EXPAND, border=30)
 
+		# Spacer
 		vbox.Add((-1, 25))
 
+		# Start button
 		hbox5 = wx.BoxSizer(wx.HORIZONTAL)
 		self.btnStartOrganizing = wx.Button(panel, label='Start Organizing', size=(400, 30))
 		hbox5.Add(self.btnStartOrganizing)
@@ -129,7 +151,7 @@ class OrganizerView(wx.Frame):
 
 		panel.SetSizer(vbox)
 
-		
+		self.chkChangeFileNameFormat.Bind(wx.EVT_CHECKBOX, self.OnChkFileNameFormat)
 		btnInputDir.Bind(wx.EVT_BUTTON, self.OnInputPathDir)
 		btnOutputDir.Bind(wx.EVT_BUTTON, self.OnOutputPathDir)
 
@@ -142,6 +164,10 @@ class OrganizerView(wx.Frame):
 		hbox.Add(self.inputDescriptionLabel, flag=wx.RIGHT|wx.EXPAND, border=8)
 		
 		return hbox
+
+	def OnChkFileNameFormat(self, event):
+		self.fileNameFormat.Enable(event.IsChecked())
+
 	def OnInputPathDir(self, event):
 		text = "Choose the directory containing DCIM files:"
 		dir = self.chooseDirectory(text)

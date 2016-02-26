@@ -29,6 +29,9 @@ class OrganizerController:
 		sett.setIncludeMeta(self.view.chkIncludeThmLrv.IsChecked())
 		sett.setStoreByDateTaken(self.view.chkDateSubDirs.IsChecked())
 
+		sett.setUseCustomNamingFormat(self.view.chkChangeFileNameFormat.IsChecked())
+		sett.setFileNamingFormat(self.view.fileNameFormat.GetValue())
+
 		self.model.startProcessing(self.view.inputPathText.GetValue(), 
 			self.view.outputPathText.GetValue(), sett)
 		pub.sendMessage("STATUS UPDATE", message="Finished processing...")

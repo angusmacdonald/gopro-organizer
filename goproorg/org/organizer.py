@@ -50,37 +50,70 @@ class Organizer:
 				continue
 
 	def _moveFilesInDir(self, inputDir, outputDir):
-		for file in os.listdir(inputDir):
-			self._processFile(file, inputDir, outputDir)
 
-	def _processFile(self, fileName, inputDir, rootOutputDir):
-		fullFilePath = os.path.join(inputDir, fileName)
-			
-		subDirectory = file_matcher.determineDestination(fileName, self._getFileNamingPatterns())
+		for root, directories, filenames in os.walk(inputDir):
+			for filename in filenames: 
+				fullFilePath = os.path.join(root,filename) 
+				self._processFile(filename, fullFilePath, outputDir)
+
+	def _processFile(self, filename, fullFilePath, rootOutputDir):
+
+		subDirectory = file_matcher.determineDestination(filename, self._getFileNamingPatterns())
 		
 		if subDirectory:
 			# If we know where to move this file, move it
 			action = "Moving" if self.settings.moveFile else "Copying"
-			logging.debug("{} '{}' to '{}'".format(action, fileName, subDirectory))
+			logging.debug("{} '{}' to '{}'".format(action, filename, subDirectory))
 			pub.sendMessage("STATUS UPDATE", 
-				message="{} '{}' to '{}'".format(action, fileName, subDirectory))
+				message="{} '{}' to '{}'".format(action, filename, subDirectory))
 		
-			destDir = self._getDestDirectory(fullFilePath, rootOutputDir, subDirectory)
+			destDir = self._getDestPath(fullFilePath, rootOutputDir, subDirectory)
 			
-			self._moveToDir(destDir, fullFilePath)
+			newFileName = self._getNewFileName(fullFilePath, destDir)
+
+			self._moveToDir(destDir, fullFilePath, newFileName)
 		else:
 			# This file type is not recognized so it is ignored
-			logging.info("Filename format not recognized: {}".format(fileName))
+			logging.info("Filename format not recognized: {}".format(filename))
 			pub.sendMessage("STATUS UPDATE", 
-				message="Ignoring '{}'".format(fileName))
+				message="Ignoring '{}'".format(filename))
 
-	def _getDestDirectory(self, fullFilePath, rootOutputDir, subDirectory):
+	def _getDestPath(self, fullFilePath, rootOutputDir, subDirectory):
 		dateTaken = photoinfo.getDateTaken(fullFilePath)
 		
-		if (self.settings.storeByDateTaken):
+		if self.settings.storeByDateTaken:
 			return os.path.join(rootOutputDir, dateTaken, subDirectory)
 		else :
 			return os.path.join(rootOutputDir, subDirectory)
+
+	def _getNewFileName(self, fullFilePath, destDir):
+		# TODO Get time as well as date
+		
+		if self.settings.useCustomNamingFormat:
+			customFormat = self.settings.fileNamingFormat
+			filename, file_extension = os.path.splitext(fullFilePath)
+			
+			dateTaken = photoinfo.getDateTaken(fullFilePath, customFormat)
+			newFilePath = "{}{}".format(dateTaken, file_extension)
+
+			# Ensure file name is unique (add number to end to make unique if not):
+			count = 1
+			while True:
+				fullPathOfNewFile = absInputPath = os.path.join(destDir, newFilePath)
+				logging.debug("Checking if file exists: {}".format(fullPathOfNewFile))
+				
+				if not os.path.isfile(fullPathOfNewFile):
+					logging.debug("File does not exist: {}".format(fullPathOfNewFile))
+					break
+
+				newFilePath = "{}_{}{}".format(dateTaken, count, file_extension)
+				count += 1
+
+			return newFilePath
+		else:
+			return os.path.basename(fullFilePath)
+
+
 
 	def _getFileNamingPatterns(self):
 		patterns = file_matcher.defaultPatterns()
@@ -90,23 +123,21 @@ class Organizer:
 
 		return patterns
 
-	def _moveToDir(self, destDir, filePath):
+	def _moveToDir(self, destDir, srcFile, fileName):
 
 		if not os.path.exists(destDir):
 			os.makedirs(destDir)
-
-		fileName = os.path.basename(filePath)
 		
 		destFilePath = os.path.join(destDir, fileName)
 
 		moveFile = self.settings.moveFile
 
-		logging.debug("Moving ({}) '{}'' to '{}'".format(moveFile, filePath, destFilePath))
+		logging.debug("Moving ({}) '{}'' to '{}'".format(moveFile, destFilePath, destFilePath))
 
 		if moveFile:
-			shutil.move(filePath, destFilePath)
+			shutil.move(srcFile, destFilePath)
 		else:	
-			shutil.copy2(filePath, destFilePath)
+			shutil.copy2(srcFile, destFilePath)
 
 
 if __name__ == '__main__':
