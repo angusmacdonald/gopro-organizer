@@ -1,6 +1,6 @@
 import sys
-sys.path.append('goproorg')
-from org import settings
+sys.path.append('')
+from organizercore import settings
 
 import wx
 from wx.lib.pubsub import pub

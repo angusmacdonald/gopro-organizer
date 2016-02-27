@@ -43,11 +43,7 @@ class Organizer:
 		absInputPath = os.path.abspath(inputDir)
 		absOutputDir = os.path.abspath(outputDir)
 
-		for item in os.listdir(absInputPath):
-			if not os.path.isfile(item):
-				self._moveFilesInDir(os.path.join(inputDir, item), absOutputDir)
-			else:
-				continue
+		self._moveFilesInDir(absInputPath, absOutputDir)
 
 	def _moveFilesInDir(self, inputDir, outputDir):
 
@@ -87,8 +83,6 @@ class Organizer:
 			return os.path.join(rootOutputDir, subDirectory)
 
 	def _getNewFileName(self, fullFilePath, destDir):
-		# TODO Get time as well as date
-		
 		if self.settings.useCustomNamingFormat:
 			customFormat = self.settings.fileNamingFormat
 			filename, file_extension = os.path.splitext(fullFilePath)

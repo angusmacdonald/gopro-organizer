@@ -17,7 +17,7 @@ ez_setup.use_setuptools()
 import sys
 from setuptools import setup
 
-mainscript = 'goproorg/ui/controller.py'
+mainscript = 'organizerui/controller.py'
 
 if sys.platform == 'darwin':
  extra_options = dict(
@@ -25,7 +25,11 @@ if sys.platform == 'darwin':
 	 app=[mainscript],
 	 # Cross-platform applications generally expect sys.argv to
 	 # be used for opening files.
-	 options=dict(py2app=dict(argv_emulation=False, resources=["default.conf"])),
+	 options=dict(py2app=dict(
+	 	argv_emulation=False, 
+	 	resources=["default.conf"], 
+	 	iconfile="assets/icon.icns")
+	 ),
  )
 elif sys.platform == 'win32':
  extra_options = dict(

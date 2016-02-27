@@ -1,7 +1,7 @@
 import sys
-sys.path.append('goproorg')
+sys.path.append('')
 
-from org import organizer
+from organizercore import organizer
 
 class OrganizerModel:
 
