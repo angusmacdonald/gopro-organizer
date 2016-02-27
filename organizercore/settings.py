@@ -4,23 +4,23 @@ config = ConfigObj("default.conf", unrepr=True)
 
 class OrganizerSettings:
 	def __init__(self):
-		self.moveFile = config['move']
-		self.includeMeta = config['includeThmAndLrvFiles']
-		self.storeByDateTaken = config['storeByDateTaken']
-		self.fileNamingFormat = config['dateNamingFormat']
-		self.useCustomNamingFormat = config['useCustomNamingFormat']
+		self.move_file = config['move']
+		self.include_meta = config['include_thm_lrv_files']
+		self.store_by_date_taken = config['store_by_date_taken']
+		self.file_naming_format = config['date_naming_format']
+		self.use_custom_naming_format = config['use_custom_naming_format']
 
-	def setMoveFile(self, move):
-		self.moveFile = move
+	def set_move_file(self, move):
+		self.move_file = move
 
-	def setIncludeMeta(self, includeMeta):
-		self.includeMeta = includeMeta
+	def set_include_meta(self, include_meta):
+		self.include_meta = include_meta
 
-	def setStoreByDateTaken(self, storeByDateTaken):
-		self.storeByDateTaken = storeByDateTaken
+	def set_store_by_date_taken(self, store_by_date_taken):
+		self.store_by_date_taken = store_by_date_taken
 
-	def setUseCustomNamingFormat(self, useCustomNamingFormat):
-		self.useCustomNamingFormat = useCustomNamingFormat
+	def set_use_custom_naming_format(self, use_custom_naming_format):
+		self.use_custom_naming_format = use_custom_naming_format
 
-	def setFileNamingFormat(self, fileNamingFormat):
-		self.fileNamingFormat = fileNamingFormat
+	def set_custom_naming_format(self, file_naming_format):
+		self.file_naming_format = file_naming_format

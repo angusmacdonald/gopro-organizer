@@ -12,7 +12,7 @@ CHAPTERED = config['chaptered_dir']
 THREE_D = config['three_d_dir']
 
 # Via http://gopro.com/support/articles/hero3-and-hero3-file-naming-convention
-def defaultPatterns():
+def default_patterns():
 	""" Returns a dictionary mapping file regex patterns to the name of the directory
 		where these files should be stored when matched
 	"""
@@ -23,28 +23,28 @@ def defaultPatterns():
 			 'G(\d\d\d)\d\d\d\d\.JPG': TIMELAPSES,
 			 '3D_[LR]\d\d\d\d\.MP4': THREE_D }
 
-def determineDestination(fileName, patterns=defaultPatterns()):
+def determine_destination(file_name, patterns=default_patterns()):
 	""" Given a filename, return the directory where this file should be stored.
 
 		'None' is returned if the file is not recognized amongst the provided patterns.
 
 		Arguments:
-			fileName (str): Name of the file being checked.
-			patterns (dict): regex dict of the form described in 'defaultPatterns()'
+			file_name (str): Name of the file being checked.
+			patterns (dict): regex dict of the form described in 'default_patterns()'
 
 		Returns: The relative path to the directory where the file should be stored, or
 			None if the file is not recognized.
 	"""
 
 	for pattern, dirName in patterns.iteritems():
-		m = re.search(pattern, fileName)
+		m = re.search(pattern, file_name)
 		
 		if m:
-			return _processMatch(m, pattern, dirName)
+			return _process_match(m, pattern, dirName)
 	
 	return None
 
-def _processMatch(m, pattern, name):
+def _process_match(m, pattern, name):
 	numGroups = len(m.groups())
 
 	if numGroups > 0:

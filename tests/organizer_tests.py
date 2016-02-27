@@ -1,8 +1,8 @@
 from nose.tools import *
 
 import sys
-sys.path.append('goproorg')
-from org import organizer
+sys.path.append('')
+from organizercore import organizer
 
 import shutil, tempfile, os
 
@@ -33,8 +33,8 @@ class TestOrganizer:
 			if not os.path.exists(containingDir):
 				os.makedirs(containingDir)
 
-			fileName = os.path.join(containingDir, photo)
-			self.files = self.files + (createFileWithName(fileName), )
+			file_name = os.path.join(containingDir, photo)
+			self.files = self.files + (createFileWithName(file_name), )
 
 	def tearDown(self):
 		shutil.rmtree(self.input_dir)
@@ -46,7 +46,7 @@ class TestOrganizer:
 			assert os.path.exists(file.name)
 
 	def test_files_organized(self):
-		organizer.Organizer().processGoProDirectory(self.input_dir, self.output_dir)
+		organizer.Organizer().process_gopro_dir(self.input_dir, self.output_dir)
 
 		assert len(os.listdir(self.output_dir)) == 1
 
@@ -65,9 +65,6 @@ class TestOrganizer:
 
 		assert len(os.listdir(os.path.join(dateDir, TIMELAPSES, '009'))) == 3
 		assert len(os.listdir(os.path.join(dateDir, TIMELAPSES, '010'))) == 1
-
-		
-
 
 def createFileWithName(name):
 	return open(name, 'w+')

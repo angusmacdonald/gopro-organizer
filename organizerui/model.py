@@ -5,5 +5,5 @@ from organizercore import organizer
 
 class OrganizerModel:
 
-    def startProcessing(self, inputDir, outputDir, settings):
-        organizer.Organizer(settings).processGoProDirectory(inputDir, outputDir)
+    def start_processing(self, input_dir, output_dir, settings):
+        organizer.Organizer(settings).process_gopro_dir(input_dir, output_dir)

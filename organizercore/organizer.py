@@ -17,7 +17,7 @@ class Organizer:
 	""" Main class, finds and moves/copies photos as specified in settings.
 
 		The class is initialized with settings that define how the move will
-		take place, and the processGoProDirectory() starts the action on a
+		take place, and the process_gopro_dir() starts the action on a
 		specified set of input and output directories.
 	"""
 
@@ -30,111 +30,111 @@ class Organizer:
 		
 		self.settings = sett
 
-	def processGoProDirectory(self, inputDir, outputDir):
+	def process_gopro_dir(self, input_dir, output_dir):
 		"""
 			Find all the appropriate files in the input directory and
 			move/copy them to the output directory.
 
 			Arguments:
-				inputDir (str): path to the directory containing GoPro DCIM dirs.
-				outputDir (str): path to the directory where results will be stored.
+				input_dir (str): path to the directory containing GoPro DCIM dirs.
+				output_dir (str): path to the directory where results will be stored.
 		"""
 
-		absInputPath = os.path.abspath(inputDir)
-		absOutputDir = os.path.abspath(outputDir)
+		abs_input_path = os.path.abspath(input_dir)
+		abs_output_dir = os.path.abspath(output_dir)
 
-		self._moveFilesInDir(absInputPath, absOutputDir)
+		self._process_files(abs_input_path, abs_output_dir)
 
-	def _moveFilesInDir(self, inputDir, outputDir):
+	def _process_files(self, input_dir, output_dir):
 
-		for root, directories, filenames in os.walk(inputDir):
+		for root, directories, filenames in os.walk(input_dir):
 			for filename in filenames: 
-				fullFilePath = os.path.join(root,filename) 
-				self._processFile(filename, fullFilePath, outputDir)
+				full_file_path = os.path.join(root,filename) 
+				self._process_single_file(filename, full_file_path, output_dir)
 
-	def _processFile(self, filename, fullFilePath, rootOutputDir):
+	def _process_single_file(self, filename, full_file_path, root_output_dir):
 
-		subDirectory = file_matcher.determineDestination(filename, self._getFileNamingPatterns())
+		sub_directory = file_matcher.determine_destination(filename, self._get_file_naming_patterns())
 		
-		if subDirectory:
+		if sub_directory:
 			# If we know where to move this file, move it
-			action = "Moving" if self.settings.moveFile else "Copying"
-			logging.debug("{} '{}' to '{}'".format(action, filename, subDirectory))
+			action = "Moving" if self.settings.move_file else "Copying"
+			logging.debug("{} '{}' to '{}'".format(action, filename, sub_directory))
 			pub.sendMessage("STATUS UPDATE", 
-				message="{} '{}' to '{}'".format(action, filename, subDirectory))
+				message="{} '{}' to '{}'".format(action, filename, sub_directory))
 		
-			destDir = self._getDestPath(fullFilePath, rootOutputDir, subDirectory)
+			dest_dir = self._get_dest_path(full_file_path, root_output_dir, sub_directory)
 			
-			newFileName = self._getNewFileName(fullFilePath, destDir)
+			newFileName = self._get_new_filename(full_file_path, dest_dir)
 
-			self._moveToDir(destDir, fullFilePath, newFileName)
+			self._move_file_to_dir(dest_dir, full_file_path, newFileName)
 		else:
 			# This file type is not recognized so it is ignored
 			logging.info("Filename format not recognized: {}".format(filename))
 			pub.sendMessage("STATUS UPDATE", 
 				message="Ignoring '{}'".format(filename))
 
-	def _getDestPath(self, fullFilePath, rootOutputDir, subDirectory):
-		dateTaken = photoinfo.getDateTaken(fullFilePath)
+	def _get_dest_path(self, full_file_path, root_output_dir, sub_directory):
+		date_taken = photoinfo.getDateTaken(full_file_path)
 		
-		if self.settings.storeByDateTaken:
-			return os.path.join(rootOutputDir, dateTaken, subDirectory)
+		if self.settings.store_by_date_taken:
+			return os.path.join(root_output_dir, date_taken, sub_directory)
 		else :
-			return os.path.join(rootOutputDir, subDirectory)
+			return os.path.join(root_output_dir, sub_directory)
 
-	def _getNewFileName(self, fullFilePath, destDir):
-		if self.settings.useCustomNamingFormat:
-			customFormat = self.settings.fileNamingFormat
-			filename, file_extension = os.path.splitext(fullFilePath)
+	def _get_new_filename(self, full_file_path, dest_dir):
+		if self.settings.use_custom_naming_format:
+			customFormat = self.settings.file_naming_format
+			filename, file_extension = os.path.splitext(full_file_path)
 			
-			dateTaken = photoinfo.getDateTaken(fullFilePath, customFormat)
-			newFilePath = "{}{}".format(dateTaken, file_extension)
+			date_taken = photoinfo.getDateTaken(full_file_path, customFormat)
+			new_file_path = "{}{}".format(date_taken, file_extension)
 
 			# Ensure file name is unique (add number to end to make unique if not):
 			count = 1
 			while True:
-				fullPathOfNewFile = absInputPath = os.path.join(destDir, newFilePath)
+				fullPathOfNewFile = abs_input_path = os.path.join(dest_dir, new_file_path)
 				logging.debug("Checking if file exists: {}".format(fullPathOfNewFile))
 				
 				if not os.path.isfile(fullPathOfNewFile):
 					logging.debug("File does not exist: {}".format(fullPathOfNewFile))
 					break
 
-				newFilePath = "{}_{}{}".format(dateTaken, count, file_extension)
+				new_file_path = "{}_{}{}".format(date_taken, count, file_extension)
 				count += 1
 
-			return newFilePath
+			return new_file_path
 		else:
-			return os.path.basename(fullFilePath)
+			return os.path.basename(full_file_path)
 
 
 
-	def _getFileNamingPatterns(self):
-		patterns = file_matcher.defaultPatterns()
+	def _get_file_naming_patterns(self):
+		patterns = file_matcher.default_patterns()
 		
-		if (self.settings.includeMeta):
+		if (self.settings.include_meta):
 			patterns['GOPR\d\d\d\d\.[THM|LRV]'] = VIDEOS
 
 		return patterns
 
-	def _moveToDir(self, destDir, srcFile, fileName):
+	def _move_file_to_dir(self, dest_dir, src_file, file_name):
 
-		if not os.path.exists(destDir):
-			os.makedirs(destDir)
+		if not os.path.exists(dest_dir):
+			os.makedirs(dest_dir)
 		
-		destFilePath = os.path.join(destDir, fileName)
+		dest_file_path = os.path.join(dest_dir, file_name)
 
-		moveFile = self.settings.moveFile
+		move_file = self.settings.move_file
 
-		logging.debug("Moving ({}) '{}'' to '{}'".format(moveFile, destFilePath, destFilePath))
+		logging.debug("Moving ({}) '{}'' to '{}'".format(move_file, dest_file_path, dest_file_path))
 
-		if moveFile:
-			shutil.move(srcFile, destFilePath)
+		if move_file:
+			shutil.move(src_file, dest_file_path)
 		else:	
-			shutil.copy2(srcFile, destFilePath)
+			shutil.copy2(src_file, dest_file_path)
 
 
 if __name__ == '__main__':
-	inputDir = sys.argv[1]
-	outputDir = sys.argv[2]
-	iterateFolder(inputDir, outputDir)
+	input_dir = sys.argv[1]
+	output_dir = sys.argv[2]
+	iterateFolder(input_dir, output_dir)

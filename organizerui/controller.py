@@ -11,33 +11,33 @@ class OrganizerController:
 	def __init__(self, app, appName):
 		self.model = model.OrganizerModel() #Todo Make organizer class
 
-		pub.subscribe(self.ActionProcessed, "STATUS UPDATE")
+		pub.subscribe(self.action_processed, "STATUS UPDATE")
 
 		#set up the first frame which displays the current Model value
 		self.view = view.OrganizerView(None, title=appName)
-		self.view.btnStartOrganizing.Bind(wx.EVT_BUTTON, self.StartOrganizing)
+		self.view.btnStartOrganizing.Bind(wx.EVT_BUTTON, self.start_organizing)
 
 		self.view.Show()
 
-	def StartOrganizing(self, evt):
+	def start_organizing(self, evt):
 		pub.sendMessage("STATUS UPDATE", message="Beginning processing...")
 
 		sett = settings.OrganizerSettings()
 
-		sett.setMoveFile(not self.view.chkCopyFiles.IsChecked())
+		sett.set_move_file(not self.view.chkCopyFiles.IsChecked())
 
-		sett.setIncludeMeta(self.view.chkIncludeThmLrv.IsChecked())
-		sett.setStoreByDateTaken(self.view.chkDateSubDirs.IsChecked())
+		sett.set_include_meta(self.view.chkIncludeThmLrv.IsChecked())
+		sett.set_store_by_date_taken(self.view.chkDateSubDirs.IsChecked())
 
-		sett.setUseCustomNamingFormat(self.view.chkChangeFileNameFormat.IsChecked())
-		sett.setFileNamingFormat(self.view.fileNameFormat.GetValue())
+		sett.set_use_custom_naming_format(self.view.chkChangeFileNameFormat.IsChecked())
+		sett.set_custom_naming_format(self.view.fileNameFormat.GetValue())
 
-		self.model.startProcessing(self.view.inputPathText.GetValue(), 
+		self.model.start_processing(self.view.inputPathText.GetValue(), 
 			self.view.outputPathText.GetValue(), sett)
 		pub.sendMessage("STATUS UPDATE", message="Finished processing...")
 		
 		
-	def ActionProcessed(self, message):
+	def action_processed(self, message):
 		self.view.AddMessage(message)
 
 

@@ -124,7 +124,7 @@ class OrganizerView(wx.Frame):
 		hbox48 = wx.BoxSizer(wx.HORIZONTAL)
 		self.fileNameFormat = wx.TextCtrl(panel)
 		self.fileNameFormat.Enable(False)
-		self.fileNameFormat.SetValue(config['dateNamingFormat'])
+		self.fileNameFormat.SetValue(config['date_naming_format'])
 		hbox48.Add(self.fileNameFormat, proportion=1, border=8)
 		
 		vbox.Add(hbox48, flag=wx.LEFT|wx.RIGHT|wx.EXPAND, border=30)

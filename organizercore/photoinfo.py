@@ -2,9 +2,9 @@
 import datetime
 import os
 
-def getDateTaken(fileName, outputFormat="%Y-%m-%d"):
+def getDateTaken(file_name, outputFormat="%Y-%m-%d"):
 	# Open image file for reading (binary mode)
-	timestamp = os.path.getmtime(fileName)
+	timestamp = os.path.getmtime(file_name)
 
 	creationTime = datetime.datetime.fromtimestamp(timestamp)
 	
