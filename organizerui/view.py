@@ -151,6 +151,7 @@ class OrganizerView(wx.Frame):
 
 		panel.SetSizer(vbox)
 
+		self.chkCopyFiles.Bind(wx.EVT_CHECKBOX, self.OnChkCopyFile)
 		self.chkChangeFileNameFormat.Bind(wx.EVT_CHECKBOX, self.OnChkFileNameFormat)
 		btnInputDir.Bind(wx.EVT_BUTTON, self.OnInputPathDir)
 		btnOutputDir.Bind(wx.EVT_BUTTON, self.OnOutputPathDir)
@@ -164,6 +165,19 @@ class OrganizerView(wx.Frame):
 		hbox.Add(self.inputDescriptionLabel, flag=wx.RIGHT|wx.EXPAND, border=8)
 		
 		return hbox
+
+
+	def OnChkCopyFile(self, event):
+		if not event.IsChecked():
+			dial = wx.MessageDialog(None, 
+				'Are you sure? Disabling copy means that files are removed from their source location.', 'Disable copy?', 
+				wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+			retCode = dial.ShowModal()
+
+			if (retCode != wx.ID_YES):
+				self.chkCopyFiles.SetValue(True)
+			
+			dial.Destroy()
 
 	def OnChkFileNameFormat(self, event):
 		self.fileNameFormat.Enable(event.IsChecked())
