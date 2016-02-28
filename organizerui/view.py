@@ -196,13 +196,13 @@ class OrganizerView(wx.Frame):
 		self.fileNameFormat.Enable(event.IsChecked())
 
 	def OnInputPathDir(self, event):
-		text = "Choose the directory containing DCIM files:"
+		text = "Choose the directory containing your GoPro photos:"
 		dir = self.chooseDirectory(text)
 
 		self.inputPathText.SetValue(dir)
 
 	def OnOutputPathDir(self, event):
-		text = "Choose the directory where your organized photos will be stored:"
+		text = "Choose the directory where the files should be copied:"
 		dir = self.chooseDirectory(text)
 
 		self.outputPathText.SetValue(dir)

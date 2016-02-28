@@ -40,6 +40,11 @@ class Organizer:
 				output_dir (str): path to the directory where results will be stored.
 		"""
 
+		if in_directory(output_dir, input_dir):
+			pub.sendMessage("STATUS UPDATE", 
+				message="ERROR: The output directory cannot be a sub-directory of the input directory.")			
+			return
+			
 		abs_input_path = os.path.abspath(input_dir)
 		abs_output_dir = os.path.abspath(output_dir)
 
@@ -133,6 +138,15 @@ class Organizer:
 		else:	
 			shutil.copy2(src_file, dest_file_path)
 
+
+def in_directory(file, directory):
+    # http://stackoverflow.com/q/3812849
+    directory = os.path.join(os.path.realpath(directory), '')
+    file = os.path.realpath(file)
+
+    #return true, if the common prefix of both is equal to directory
+    #e.g. /a/b/c/d.rst and directory is /a/b, the common prefix is /a/b
+    return os.path.commonprefix([file, directory]) == directory
 
 if __name__ == '__main__':
 	input_dir = sys.argv[1]
