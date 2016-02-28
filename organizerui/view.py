@@ -9,7 +9,7 @@ class OrganizerView(wx.Frame):
   
 	def __init__(self, parent, title):
 		super(OrganizerView, self).__init__(parent, title=title, 
-			size=(400, 590))
+			size=(400, 530))
 			
 		self.InitUI()
 		self.Centre()
@@ -43,54 +43,57 @@ class OrganizerView(wx.Frame):
 
 		# Input
 
-		hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-		self.inputPathLabel = wx.StaticText(panel, label='Input Directory')
+		self.inputPathLabel = wx.StaticText(panel, label='Input Directory    ')
+		self.inputPathLabel.SetToolTip(
+			wx.ToolTip('All GoPro photos in this directory and all sub-directories will be copied.'))
 		self.inputPathLabel.SetFont(font)
-		hbox1.Add(self.inputPathLabel, flag=wx.RIGHT|wx.EXPAND, border=8)
 		self.inputPathText = wx.TextCtrl(panel)
 		self.inputPathText.SetValue(expanduser("~"))
-		hbox1.Add(self.inputPathText, proportion=1, border=8)
-		
 		btnInputDir = wx.Button(panel, label='...', size=(40, 20))
+		
+		hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+		
+		hbox1.Add(self.inputPathLabel, flag=wx.RIGHT, border=8)
+		hbox1.Add(self.inputPathText, proportion=1, border=8)
 		hbox1.Add(btnInputDir, flag=wx.LEFT|wx.RIGHT, border=10)
 
 		vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 
-		explainer1 = self.createExplainerLine(panel, fontItalic, 
-			'   The path to the directory containing DCIM sub-directories.')
-		vbox.Add(explainer1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=3)
-
-
 		# Output
 
-
-		hbox2 = wx.BoxSizer(wx.HORIZONTAL)
 		self.outputPath = wx.StaticText(panel, label='Output Directory')
 		self.outputPath.SetFont(font)
-		hbox2.Add(self.outputPath, flag=wx.RIGHT, border=8)
+		self.outputPath.SetToolTip(
+			wx.ToolTip('Where all GoPro photos will be moved/copied.'))
+		
 		self.outputPathText = wx.TextCtrl(panel)
 		self.outputPathText.SetValue(expanduser("~"))
-		hbox2.Add(self.outputPathText, proportion=1)
-		
 		btnOutputDir = wx.Button(panel, label='...', size=(40, 20))
+		
+		hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+		hbox2.Add(self.outputPath, flag=wx.RIGHT, border=8)
+		hbox2.Add(self.outputPathText, proportion=1, flag=wx.RIGHT)
+		
 		hbox2.Add(btnOutputDir,flag=wx.LEFT|wx.RIGHT, border=10)
 
 		vbox.Add(hbox2, flag=wx.LEFT | wx.TOP | wx.RIGHT | wx.EXPAND, border=10)
 		
-		explainer2 = self.createExplainerLine(panel, fontItalic, 
-			'   Where files will be copied. This directory will contain date sub-dirs.')
-	
-		vbox.Add(explainer2, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=3)
 
+		# Start button
+		
+		hbox5 = wx.BoxSizer(wx.HORIZONTAL)
+		self.btnStartOrganizing = wx.Button(panel, label='Start Organizing', size=(400, 30))
+		hbox5.Add(self.btnStartOrganizing)
+		vbox.Add(hbox5, flag=wx.EXPAND | wx.RIGHT | wx.LEFT, border=10)
 
 		
 		# Options
 		vbox.Add(self.createHeading(panel, 'Settings'), 
-			flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+			flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=5)
 		
 		# Include THM and LRV files
 		hbox4 = wx.BoxSizer(wx.HORIZONTAL)
-		self.chkIncludeThmLrv = wx.CheckBox(panel, label='Include THM and LRV Files. They are ignored if unchecked.')
+		self.chkIncludeThmLrv = wx.CheckBox(panel, label='Include THM and LRV Files.')
 		self.chkIncludeThmLrv.SetFont(font)
 		self.chkIncludeThmLrv.SetValue(True)
 		hbox4.Add(self.chkIncludeThmLrv)
@@ -100,7 +103,7 @@ class OrganizerView(wx.Frame):
 		# Copy or move?
 		hbox45 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkCopyFiles = wx.CheckBox(panel, 
-			label='Copy, leaving existing files untouched. They are deleted if unchecked.')
+			label='Copy files (move files if unchecked).')
 		self.chkCopyFiles.SetFont(font)
 		self.chkCopyFiles.SetValue(True)
 		hbox45.Add(self.chkCopyFiles)
@@ -110,7 +113,7 @@ class OrganizerView(wx.Frame):
 		# Store in date sub-directory option:
 		hbox46 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkDateSubDirs = wx.CheckBox(panel, 
-			label='Store items in sub-directories by date taken.')
+			label='Store items in sub-directories named by date taken.')
 		self.chkDateSubDirs.SetFont(font)
 		self.chkDateSubDirs.SetValue(True)
 		hbox46.Add(self.chkDateSubDirs)
@@ -120,7 +123,9 @@ class OrganizerView(wx.Frame):
 		# Rename files option:
 		hbox47 = wx.BoxSizer(wx.HORIZONTAL)
 		self.chkChangeFileNameFormat = wx.CheckBox(panel, 
-			label='Rename files to date taken format.')
+			label='Rename files to the following date format:')
+		self.chkChangeFileNameFormat.SetToolTip(
+			wx.ToolTip('The format of this pattern is described in the supplied documentation.'))
 		self.chkChangeFileNameFormat.SetFont(font)
 		self.chkChangeFileNameFormat.SetValue(False)
 		hbox47.Add(self.chkChangeFileNameFormat)
@@ -136,15 +141,6 @@ class OrganizerView(wx.Frame):
 		
 		vbox.Add(hbox48, flag=wx.LEFT|wx.RIGHT|wx.EXPAND, border=30)
 
-		# Start button
-		vbox.Add(self.createHeading(panel, 'Actions'), 
-			flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		
-		hbox5 = wx.BoxSizer(wx.HORIZONTAL)
-		self.btnStartOrganizing = wx.Button(panel, label='Start Organizing', size=(400, 30))
-		hbox5.Add(self.btnStartOrganizing)
-		vbox.Add(hbox5, flag=wx.EXPAND, border=1)
-
 
 
 		# Status Box
@@ -155,7 +151,7 @@ class OrganizerView(wx.Frame):
 		self.statusUpdates = wx.TextCtrl(panel, -1,"Waiting for input...\n", 
 			size=(400, 200), style=wx.TE_MULTILINE | wx.TE_READONLY)
 		hbox6.Add(self.statusUpdates)
-		vbox.Add(hbox6, flag=wx.ALIGN_RIGHT|wx.RIGHT|wx.LEFT|wx.EXPAND, border=1)
+		vbox.Add(hbox6, flag=wx.ALIGN_RIGHT|wx.RIGHT|wx.LEFT|wx.EXPAND, border=10)
 
 
 		panel.SetSizer(vbox)
