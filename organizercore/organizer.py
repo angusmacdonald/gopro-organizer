@@ -165,8 +165,3 @@ def in_directory(file, directory):
 	#return true, if the common prefix of both is equal to directory
 	#e.g. /a/b/c/d.rst and directory is /a/b, the common prefix is /a/b
 	return os.path.commonprefix([file, directory]) == directory
-
-if __name__ == '__main__':
-	input_dir = sys.argv[1]
-	output_dir = sys.argv[2]
-	iterateFolder(input_dir, output_dir)
