@@ -38,26 +38,42 @@ class Organizer:
 			Arguments:
 				input_dir (str): path to the directory containing GoPro DCIM dirs.
 				output_dir (str): path to the directory where results will be stored.
+
+			Returns: The number of files successfully processed.
 		"""
 
 		if in_directory(output_dir, input_dir):
 			pub.sendMessage("STATUS UPDATE", 
 				message="ERROR: The output directory cannot be a sub-directory of the input directory.")			
-			return
-			
+			return 0
+
+		if not os.path.exists(input_dir):
+			pub.sendMessage("STATUS UPDATE", 
+				message="ERROR: The input directory does not exist.")			
+			return 0
+
 		abs_input_path = os.path.abspath(input_dir)
 		abs_output_dir = os.path.abspath(output_dir)
 
-		self._process_files(abs_input_path, abs_output_dir)
+		return self._process_files(abs_input_path, abs_output_dir)
 
 	def _process_files(self, input_dir, output_dir):
+		files_processed = 0
 
 		for root, directories, filenames in os.walk(input_dir):
 			for filename in filenames: 
 				full_file_path = os.path.join(root,filename) 
-				self._process_single_file(filename, full_file_path, output_dir)
+				files_processed += self._process_single_file(filename, full_file_path, output_dir)
+
+		return files_processed
 
 	def _process_single_file(self, filename, full_file_path, root_output_dir):
+		"""
+			Analyze the specified file to determine if it matches a pattern that
+			should be moved, and move the file if so.
+
+			Returns: 1 if the file was moved, 0 if it was not.
+		"""
 
 		sub_directory = file_matcher.determine_destination(filename, self._get_file_naming_patterns())
 		
@@ -73,11 +89,13 @@ class Organizer:
 			newFileName = self._get_new_filename(full_file_path, dest_dir)
 
 			self._move_file_to_dir(dest_dir, full_file_path, newFileName)
+			return 1
 		else:
 			# This file type is not recognized so it is ignored
 			logging.info("Filename format not recognized: {}".format(filename))
 			pub.sendMessage("STATUS UPDATE", 
 				message="Ignoring '{}'".format(filename))
+			return 0
 
 	def _get_dest_path(self, full_file_path, root_output_dir, sub_directory):
 		date_taken = photoinfo.getDateTaken(full_file_path)
