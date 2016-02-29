@@ -1,5 +1,6 @@
 import sys
-import os, shutil
+import os
+import shutil
 import logging
 
 from configobj import ConfigObj
@@ -44,12 +45,12 @@ class Organizer:
 
 		if in_directory(output_dir, input_dir):
 			pub.sendMessage("STATUS UPDATE", 
-				message="ERROR: The output directory cannot be a sub-directory of the input directory.")			
+				message="ERROR: The output directory cannot be a sub-directory of the input directory.")            
 			return 0
 
 		if not os.path.exists(input_dir):
 			pub.sendMessage("STATUS UPDATE", 
-				message="ERROR: The input directory does not exist.")			
+				message="ERROR: The input directory does not exist.")           
 			return 0
 
 		abs_input_path = os.path.abspath(input_dir)
@@ -131,7 +132,6 @@ class Organizer:
 			return os.path.basename(full_file_path)
 
 
-
 	def _get_file_naming_patterns(self):
 		patterns = file_matcher.default_patterns()
 		
@@ -153,18 +153,18 @@ class Organizer:
 
 		if move_file:
 			shutil.move(src_file, dest_file_path)
-		else:	
+		else:   
 			shutil.copy2(src_file, dest_file_path)
 
 
 def in_directory(file, directory):
-    # http://stackoverflow.com/q/3812849
-    directory = os.path.join(os.path.realpath(directory), '')
-    file = os.path.realpath(file)
+	# http://stackoverflow.com/q/3812849
+	directory = os.path.join(os.path.realpath(directory), '')
+	file = os.path.realpath(file)
 
-    #return true, if the common prefix of both is equal to directory
-    #e.g. /a/b/c/d.rst and directory is /a/b, the common prefix is /a/b
-    return os.path.commonprefix([file, directory]) == directory
+	#return true, if the common prefix of both is equal to directory
+	#e.g. /a/b/c/d.rst and directory is /a/b, the common prefix is /a/b
+	return os.path.commonprefix([file, directory]) == directory
 
 if __name__ == '__main__':
 	input_dir = sys.argv[1]
