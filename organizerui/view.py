@@ -29,13 +29,14 @@ class OrganizerView(wx.Frame):
 
 		# Main Body
 
-		font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-  		fontItalic = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+		font = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
+  		fontItalic = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
   		fontItalic = fontItalic.MakeItalic()
-  		self.fontHeading = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+  		self.fontHeading = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
   		self.fontHeading.SetPointSize(20)
 		vbox = wx.BoxSizer(wx.VERTICAL)
 
+		vbox.Add((10,10))
 		# Heading 1
 		heading1 = self.createHeading(panel, 'Media Location')
 		vbox.Add(heading1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=10)
