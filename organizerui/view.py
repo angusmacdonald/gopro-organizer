@@ -29,11 +29,11 @@ class OrganizerView(wx.Frame):
 
 		# Main Body
 
-		font = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
-  		fontItalic = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
+		font = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
+  		fontItalic = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
   		fontItalic = fontItalic.MakeItalic()
-  		self.fontHeading = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL)
-  		self.fontHeading.SetPointSize(20)
+  		self.fontHeading = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
+  		self.fontHeading.SetPointSize(18)
 		vbox = wx.BoxSizer(wx.VERTICAL)
 
 		vbox.Add((10,10))
