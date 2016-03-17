@@ -32,9 +32,19 @@ if sys.platform == 'darwin':
 	 ),
  )
 elif sys.platform == 'win32':
+ sys.argv.append('py2exe')
+ import py2exe
+
  extra_options = dict(
-	 setup_requires=['py2exe'],
-	 app=[mainscript],
+	options = {
+		'py2exe': {
+			'optimize': 2, 
+			"packages": ['wx.lib.pubsub'],
+			}
+		},
+    windows = [{'script': mainscript}],
+    zipfile = None,
+    data_files = [('', ["default.conf"])]
  )
 else:
 	extra_options = {
@@ -53,3 +63,8 @@ setup(
 	name="GoPro Organizer",
 	**extra_options
 )
+
+
+
+
+

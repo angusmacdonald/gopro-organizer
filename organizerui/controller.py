@@ -1,11 +1,13 @@
 import sys
 sys.path.append('')
 from organizercore import settings
+from organizerui import view
+from organizerui import model
 
 import wx
+
+from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
-import view
-import model
 
 class OrganizerController:
 	def __init__(self, app, appName):
