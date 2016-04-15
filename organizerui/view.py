@@ -1,9 +1,12 @@
 import wx
 from os.path import expanduser
 import logging
+import threading
 
 from configobj import ConfigObj
 config = ConfigObj("default.conf", unrepr=True)
+
+lock = threading.Lock()
 
 class OrganizerView(wx.Frame):
   
@@ -220,12 +223,19 @@ class OrganizerView(wx.Frame):
 		return response
 
 	def AddMessage(self, message):
-		logging.debug("Incoming message: {}".format(message))
+		lock.acquire()
+		
+		try:
+			logging.debug("Incoming message: {}".format(message))
 
-		newStatus = "{}\n".format(message)
+			newStatus = "{}\n".format(message)
 
-		self.statusUpdates.AppendText(newStatus)
-		self.statusUpdates.Refresh()
+			wx.CallAfter(self.statusUpdates.AppendText, newStatus)
+
+			
+			
+		finally:
+   			lock.release() # release lock, no matter what
 
 
 	def OnClose(self, event):

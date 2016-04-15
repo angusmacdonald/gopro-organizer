@@ -9,6 +9,9 @@ import wx
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
 
+import Queue
+import threading
+
 class OrganizerController:
 	def __init__(self, app, appName):
 		self.model = model.OrganizerModel() #Todo Make organizer class
@@ -23,7 +26,7 @@ class OrganizerController:
 
 	def start_organizing(self, evt):
 		pub.sendMessage("STATUS UPDATE", message="Beginning processing...")
-
+		self.view.btnStartOrganizing.Disable()
 		sett = settings.OrganizerSettings()
 
 		sett.set_move_file(not self.view.chkCopyFiles.IsChecked())
@@ -34,11 +37,24 @@ class OrganizerController:
 		sett.set_use_custom_naming_format(self.view.chkChangeFileNameFormat.IsChecked())
 		sett.set_custom_naming_format(self.view.fileNameFormat.GetValue())
 
-		self.model.start_processing(self.view.inputPathText.GetValue(), 
+		self.start_processing_in_new_thread(self.view.inputPathText.GetValue(), 
 			self.view.outputPathText.GetValue(), sett)
+		
+	def start_processing_in_new_thread(self, input_dir, output_dir, settings):
+
+		q = Queue.Queue()
+
+		t = threading.Thread(target=self.start_processing, 
+			args = (input_dir, output_dir, settings))
+		t.daemon = True
+		t.start()
+
+	def start_processing(self, input_dir, output_dir, settings):
+		self.model.start_processing(input_dir, output_dir, settings)	
 		pub.sendMessage("STATUS UPDATE", message="Finished processing...")
-		
-		
+		self.view.btnStartOrganizing.Enable()
+			
+
 	def action_processed(self, message):
 		self.view.AddMessage(message)
 
