@@ -17,6 +17,8 @@ ez_setup.use_setuptools()
 import sys
 from setuptools import setup
 
+import glob
+
 mainscript = 'organizerui/controller.py'
 
 if sys.platform == 'darwin':
@@ -33,6 +35,9 @@ if sys.platform == 'darwin':
  )
 elif sys.platform == 'win32':
  sys.argv.append('py2exe')
+ sys.path.append("C:\\Microsoft.VC90.CRT")
+
+
  import py2exe
 
  extra_options = dict(
@@ -42,9 +47,19 @@ elif sys.platform == 'win32':
 			"packages": ['wx.lib.pubsub'],
 			}
 		},
-    windows = [{'script': mainscript}],
+    windows = [
+    	{
+    		'script': mainscript,
+    		'icon_resources': [(1, "assets/icon.ico")]
+    	}
+    	],
     zipfile = None,
-    data_files = [('', ["default.conf"])]
+    data_files = [
+    	('', ["default.conf"]),
+    	("Microsoft.VC90.CRT", ['C:\\redist\\msvcm90.dll', 
+    		'C:\\redist\\msvcp90.dll', 
+    		'C:\\redist\\msvcr90.dll'])
+    	]
  )
 else:
 	extra_options = {
