@@ -8,4 +8,3 @@ installer:
 	pip install py2app
 	pip install ez_setup
 	python setup.py py2app
-	#pyinstaller --onefile goproorg/ui.py -p goproorg/ -n gopro-organizer

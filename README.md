@@ -27,5 +27,14 @@ Tests can be run using nose and the following command:
    `nosetests`
 
 ## Creating an Executable
-The project uses _py2app_ to create an executable version of the project. This can be run using:
+The provided `MakeFile` shows the commands required to install dependencies, and to run the installer. 
+
+The project uses _py2app_ to create an executable version of the project. On Mac, this can be run to create a .app file:
    `python setup.py py2app`
+
+On Windows, you can use _py2exe_ to create a .EXE file:
+   `python setup.py py2exe`
+
+The windows command requires access to DLL files from the 'Microsoft Visual C++ 2008 SP1 Redistributable Package', which you can get from the [Microsoft Site](https://www.microsoft.com/en-us/download/details.aspx?id=2092).
+
+You will find these DLL files referenced directly in the `setup.py` file.
